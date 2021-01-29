@@ -13,13 +13,24 @@ class MyTasks extends StatefulWidget {
 
 class _MyTasksState extends State<MyTasks> {
    List tasks = [];
-   List completedTask = [];
+   List completedTaskList = [];
+   //checkboxCompletedTaskList is a store for which checkbox have been clicked
+   List checkboxCompletedTaskList = [];
    void getTasks() async {
-     await sessionManager.getUserTasks().then((value) => setState(
+     await sessionManager.getUserIncompleteTasks().then((value) => setState(
              () {
                tasks = value;
               }
         )
+     );
+   }
+
+   void getCompletedTasks() async {
+     await sessionManager.getUserCompletedTasks().then((value) => setState(
+             () {
+               completedTaskList = value;
+         }
+     )
      );
    }
   
@@ -29,6 +40,7 @@ class _MyTasksState extends State<MyTasks> {
   void initState() {
     super.initState();
     getTasks();
+    getCompletedTasks();
   }
 
   @override
@@ -63,26 +75,28 @@ class _MyTasksState extends State<MyTasks> {
           child: Column(
 
             children: [
-              SizedBox(height: 12),
               Flexible(
+                flex: 6,
                 child:  ListView.builder(
                   itemCount: tasks.length,
                   itemBuilder: (context, index){
                     return Card(
                       child: ListTile(
                         leading: Checkbox(
-                          value: (completedTask.contains(index)),
+                          value: (checkboxCompletedTaskList.contains(index)),
                           onChanged: (bool value){
                             String resolutionText = "";
 
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context){
+                                  TextEditingController resolutionController = TextEditingController();
                                   return AlertDialog(
                                     title: Text("Task Resolution"),
                                     content: Form(
                                       child: Container(
                                           child: TextFormField(
+                                            controller: resolutionController,
                                               decoration: InputDecoration(
                                                 labelText: "Resolution Description",
                                               ),
@@ -95,10 +109,24 @@ class _MyTasksState extends State<MyTasks> {
                                       RaisedButton(
                                           onPressed: (){
                                             setState(() {
-                                              if(completedTask.contains(index))
-                                                completedTask.remove(index);
-                                              else
-                                                completedTask.add(index);
+                                              if(checkboxCompletedTaskList.contains(index))
+                                                checkboxCompletedTaskList.remove(index);
+                                              else {
+                                                checkboxCompletedTaskList.add(index);
+                                                Map taskStatus = {
+                                                  'id' : tasks[index]['id'],
+                                                  'completed_date': new DateTime.now().toString(),
+                                                  'resolution': resolutionController.text
+                                                };
+                                                sessionManager.updateTaskStatus(taskStatus).then((value){
+                                                  print(value.body);
+                                                  if(value.body == 1){
+                                                    setState(() {
+                                                      tasks.remove(index);
+                                                    });
+                                                  }
+                                                });
+                                              }
                                             });
                                             Navigator.pop(context);
                                           },
@@ -153,6 +181,87 @@ class _MyTasksState extends State<MyTasks> {
                             },
                         ),
                       ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Divider(
+                      color: Colors.grey[400]
+                  )
+              ),
+              Flexible(
+                flex: 4,
+                child:  ListView.builder(
+                  itemCount: completedTaskList.length,
+                  itemBuilder: (context, index){
+                    return Column(
+                      children:[
+                        Text(
+                            "Completed Task",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500]
+                            ),
+                        ),
+                        Card(
+                        child: ListTile(
+                          leading: Checkbox(
+                            value: (true),
+                            onChanged: (bool value){
+
+                              print(value);
+                              print(completedTaskList[index]);
+                            },
+                          ),
+                          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          title: Text(
+                            '${completedTaskList[index]['title']}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12
+                            ),
+                          ),
+
+                          subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 5,),
+                                Text(
+                                  '${completedTaskList[index]['task_description']}',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: TextStyle(
+                                      fontFamily: 'Open Sans',
+                                      fontSize: 10,
+                                    color: Colors.grey[600]
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Text(
+                                  '${completedTaskList[index]['created_at']}',
+                                  style: TextStyle(
+                                      fontFamily: 'Open Sans',
+                                      fontSize: 11,
+                                      color: Colors.grey[500]
+                                  ),
+                                )
+                              ]
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.more_vert),
+                            onPressed: (){
+
+                            },
+                          ),
+                        ),
+                      ),
+                    ]
                     );
                   },
                 ),

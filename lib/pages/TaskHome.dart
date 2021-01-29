@@ -301,7 +301,7 @@ class _TaskHomeState extends State<TaskHome> {
                   children: [
                     FlatButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, 'myTask');
+                          Navigator.pushNamed(context, 'allTask');
                         },
                         child: Row(
                           children: [

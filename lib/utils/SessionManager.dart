@@ -33,7 +33,30 @@ class SessionManager  {
     return user;
   }
 
-  Future<List> getUserTasks () async {
+  Future<List> getUserIncompleteTasks () async {
+    //get user token
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+
+    // get all task
+    // @todo implement pagination
+    var response = await http.post(
+      consts.apiEndpoint+'api/user/tasks/incomplete',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+
+    );
+
+    List jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
+  }
+
+  Future<List> getUserCompletedTasks () async {
     Map tasks = {};
 
     //get user token
@@ -45,7 +68,30 @@ class SessionManager  {
     // get all task
     // @todo implement pagination
     var response = await http.post(
-      consts.apiEndpoint+'api/user/tasks',
+      consts.apiEndpoint+'api/user/tasks/complete',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    );
+
+    List jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
+  }
+
+  Future<List> getIncompleteTasks () async {
+
+    //get user token
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+
+    // get all task
+    // @todo implement pagination
+    var response = await http.post(
+      consts.apiEndpoint+'api/task/incomplete',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
@@ -55,7 +101,53 @@ class SessionManager  {
     );
 
     List jsonResponse = jsonDecode(response.body);
+    print (jsonResponse);
     return jsonResponse;
+  }
+
+  Future<List> getCompletedTasks () async {
+    //get user token
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+    // get all task
+    // @todo implement pagination
+    var response = await http.post(
+      consts.apiEndpoint+'api/tasks/complete',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    );
+
+    List jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
+  }
+
+  Future updateTaskStatus(Map updateMap) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+
+    var response = await http.post(
+        consts.apiEndpoint+'api/task/status/update',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: jsonEncode({
+          'id': updateMap['id'],
+          'completed_date': updateMap['completed_date'],
+          'resolution': updateMap['resolution']
+        })
+    );
+
+    return response;
+
   }
 
   saveTask(Map taskMap) async {

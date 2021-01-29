@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:it_todo_list_app/pages/AllTasks.dart';
 import 'package:it_todo_list_app/pages/Login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:it_todo_list_app/pages/MyTask.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
           'login': (context) => Login(),
           'taskHome': (context) => TaskHome(),
           'myTask': (context) => MyTasks(),
+          'allTask': (context) => AllTasks(),
         }
     );
   }
