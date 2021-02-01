@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:it_todo_list_app/pages/TaskList.dart';
 import 'package:it_todo_list_app/utils/SessionManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -51,6 +52,22 @@ class _TaskHomeState extends State<TaskHome> {
       )
     );
   }
+
+  Function allUserCompleteTaskFunction = () {
+    return sessionManager.getUserCompletedTasks();
+  };
+
+  Function allUserIncompleteTaskFunction = ()  {
+    return sessionManager.getUserIncompleteTasks();
+  };
+
+  Function allCompleteTaskFunction = () {
+     return sessionManager.getCompletedTasks();
+  };
+  
+  Function allIncompleteTaskFunction = ()  {
+    return sessionManager.getIncompleteTasks();
+  };
 
   _TaskHomeState() {}
 
@@ -146,7 +163,7 @@ class _TaskHomeState extends State<TaskHome> {
         backdropEnabled: true,
         parallaxEnabled: true,
         backdropTapClosesPanel: true,
-        minHeight: 10,
+        minHeight: 30,
         borderRadius: BorderRadius.all(Radius.circular(20)),
 
         panel: Column(
@@ -155,9 +172,24 @@ class _TaskHomeState extends State<TaskHome> {
               Form(
                 key: _formKey,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 0),
                     child: Column(
                       children: [
+                        Container(
+                          alignment: Alignment.center,
+                          height: 20,
+                          width: 60,
+                          child:
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 15),
+                            child: RaisedButton(
+                              onPressed: (){},
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0)
+                              ),
+                            ),
+                          ),
+                        ),
                         Text(
                             "New Task",
                             style: TextStyle(
@@ -216,117 +248,162 @@ class _TaskHomeState extends State<TaskHome> {
               )
             ]
         ),
-        body:  Container(
-            padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 15,
-                      backgroundColor: Colors.grey[400],
-                      child: Text(
-                        user['fName'].substring(0, 1) + user['lName'].substring(0, 1),
-                        style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white
+        body:  SingleChildScrollView(
+          child: Container(
+              padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.grey[400],
+                        child: Text(
+                          user['fName'].substring(0, 1) + user['lName'].substring(0, 1),
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.white
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  style: TextStyle(
+                                      color: Colors.grey[800],
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Open Sans'
+                                  ),
+                                  children: [
+                                    TextSpan(text: getRankInitials(user['rank'])+" "),
+                                    TextSpan(text: user['lName'])
+                                  ]
+                              )
+                          ),
+                          Text(
+                            user['email'],
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey[700]
+                            ),
+                          )
+                        ],
+                      )
+
+                    ],
+                  ),
+                  Row (
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(5, 10, 0, 20),
+                        child: Row(
+                          children: [
+                            Row(
+                                  children: [
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) =>
+                                              (
+                                                  TaskList(
+                                                      allUserCompleteTaskFunction, allUserIncompleteTaskFunction, "My Task"
+                                                  )
+                                              )));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.notes_rounded,
+                                              color: Theme.of(context).colorScheme.secondary,
+                                            ),
+                                            Text(
+                                              " My Tasks",
+                                              style: Theme.of(context).textTheme.headline2,
+                                            )
+                                          ],
+                                        )
+                                    )
+                                  ],
+                                )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.grey[500],
+                  ),
+                  Row(
+                    children: [
+                      FlatButton(
+                          onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                  (
+                                      TaskList(
+                                          allCompleteTaskFunction, allIncompleteTaskFunction, "All Task"
+                                      )
+                                  )));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.notes,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              Text(
+                                " All Tasks",
+                                style: Theme.of(context).textTheme.headline2,
+                              )
+                            ],
+                          )
+                      )
+                    ],
+                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: SizedBox(
+                  height: 300.0,
+                  child: DefaultTabController(
+                    length: 3,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        centerTitle: true,
+                        backgroundColor: Colors.grey[700],
+                        bottom: TabBar(
+                          tabs: [
+                            Tab(text: "JFK"),
+                            Tab(text: "CHB",),
+                            Tab(text: "MISC"),
+                          ],
+                        ),
+                        title: Text('Task Location'),
+                      ),
+                      body: TabBarView(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("10"),
+                              Text("Task Incomplete")
+                            ]
+                          ),
+                          Icon(Icons.directions_transit),
+                          Icon(Icons.directions_bike),
+                        ],
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                            text: TextSpan(
-                                style: TextStyle(
-                                    color: Colors.grey[800],
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Open Sans'
-                                ),
-                                children: [
-                                  TextSpan(text: getRankInitials(user['rank'])+" "),
-                                  TextSpan(text: user['lName'])
-                                ]
-                            )
-                        ),
-                        Text(
-                          user['email'],
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.grey[700]
-                          ),
-                        )
-                      ],
-                    )
-
-                  ],
                 ),
-                Row (
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(5, 10, 0, 20),
-                      child: Row(
-                        children: [
-                          Row(
-                                children: [
-                                  FlatButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, 'myTask');
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.notes_rounded),
-                                          Text(
-                                            " My Tasks",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey[600]
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                  )
-                                ],
-                              )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Divider(
-                  color: Colors.grey[500],
-                ),
-                Row(
-                  children: [
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'allTask');
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                                Icons.notes,
-                              color: Colors.grey[600],
-                            ),
-                            Text(
-                              " All Tasks",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600]
-                              ),
-                            )
-                          ],
-                        )
-                    )
-                  ],
-                )
-
-              ],
-            )
-
-        ),
+              ),
+            ]
+          ),
       ),
-    );
+        ),
+    ));
   }
 }

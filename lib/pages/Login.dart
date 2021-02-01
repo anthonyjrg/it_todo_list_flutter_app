@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:it_todo_list_app/utils/Consts.dart';
 
 
 class Login extends StatefulWidget {
@@ -13,6 +14,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   // Create storage
   final storage = FlutterSecureStorage();
+
+  Consts consts = Consts();
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -26,7 +29,7 @@ class _LoginState extends State<Login> {
 
   void login() async {
     var response = await http.post(
-      'http://10.0.2.2:8000/api/sanctum/token',
+      consts.apiEndpoint+'api/sanctum/token',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json'

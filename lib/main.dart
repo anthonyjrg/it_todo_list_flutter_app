@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:it_todo_list_app/pages/AllTasks.dart';
 import 'package:it_todo_list_app/pages/Login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:it_todo_list_app/pages/MyTask.dart';
+import 'package:it_todo_list_app/pages/TaskDetail.dart';
 import 'package:it_todo_list_app/pages/TaskHome.dart';
 
 String initRoute;
@@ -38,7 +37,17 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Open Sans'
+        fontFamily: 'Open Sans',
+        textTheme: TextTheme(
+          headline2: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[600]
+          ),
+        ),
+        colorScheme: Theme.of(context).colorScheme.copyWith (
+              primary: Color(0x014421),
+              secondary: Colors.grey[700]
+        )
       ),
       // Start the app with the "/" named route. In this case, the app starts
       // on the FirstScreen widget.
@@ -46,9 +55,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           // When navigating to the "/" route, build the FirstScreen widget.
           'login': (context) => Login(),
-          'taskHome': (context) => TaskHome(),
-          'myTask': (context) => MyTasks(),
-          'allTask': (context) => AllTasks(),
+          'taskHome': (context) => TaskHome()
         }
     );
   }

@@ -1,3 +1,4 @@
 class Consts {
-  String apiEndpoint = "http://10.0.2.2:8000/";
+  String apiEndpoint = "https://it-todo.herokuapp.com/";
+
 }

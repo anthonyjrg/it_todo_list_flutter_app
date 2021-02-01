@@ -57,7 +57,6 @@ class SessionManager  {
   }
 
   Future<List> getUserCompletedTasks () async {
-    Map tasks = {};
 
     //get user token
     WidgetsFlutterBinding.ensureInitialized();
@@ -100,9 +99,12 @@ class SessionManager  {
 
     );
 
-    List jsonResponse = jsonDecode(response.body);
-    print (jsonResponse);
-    return jsonResponse;
+    var jsonResponse =  jsonDecode(response.body);
+    List taskList = [];
+    jsonResponse.forEach((k,v)=>{
+      taskList.add(v)
+    });
+    return taskList;
   }
 
   Future<List> getCompletedTasks () async {
@@ -114,7 +116,7 @@ class SessionManager  {
     // get all task
     // @todo implement pagination
     var response = await http.post(
-      consts.apiEndpoint+'api/tasks/complete',
+      consts.apiEndpoint+'api/task/complete',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
@@ -122,8 +124,16 @@ class SessionManager  {
       },
     );
 
-    List jsonResponse = jsonDecode(response.body);
-    return jsonResponse;
+    var jsonResponse = jsonDecode(response.body);
+
+
+    List taskList = [];
+    jsonResponse.forEach((k,v)=>{
+      print(v),
+      taskList.add(v)
+    });
+
+    return taskList;
   }
 
   Future updateTaskStatus(Map updateMap) async {
