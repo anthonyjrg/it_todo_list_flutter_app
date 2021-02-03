@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:it_todo_list_app/pages/Login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:it_todo_list_app/pages/TaskDetail.dart';
-import 'package:it_todo_list_app/pages/TaskHome.dart';
+import 'package:it_todo_list_app/pages/Home.dart';
 
 String initRoute;
 
@@ -43,6 +43,10 @@ class _MyAppState extends State<MyApp> {
             fontSize: 16,
             color: Colors.grey[600]
           ),
+          subtitle2: TextStyle(
+            fontSize: 10,
+            color: Colors.grey[400]
+          )
         ),
         colorScheme: Theme.of(context).colorScheme.copyWith (
               primary: Color(0x014421),
