@@ -25,26 +25,21 @@ class _TaskDetailState extends State<TaskDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         iconTheme: IconThemeData(
-          color: Colors.grey[500], //change your color here
+          color: Colors.deepPurple[900], //change your color here
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
-          children: [
-            Icon(
-              Icons.wysiwyg_outlined,
-              color: Colors.grey[500],
-            ),
+        title:
             Text(
-              " Task Details",
+              "Task Details",
               style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 16
+                  color: Colors.deepPurple[500],
+                  fontWeight: FontWeight.bold
               ),
             ),
-          ],
-        ),
+
       ),
       body: Container(
         child: Flex(
@@ -52,7 +47,7 @@ class _TaskDetailState extends State<TaskDetail> {
           children:[
             Expanded(
               child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
               child: SingleChildScrollView(
                 child:
                   Form(child: Column(
@@ -80,7 +75,7 @@ class _TaskDetailState extends State<TaskDetail> {
                         maxLines: 3,
                       ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
                       child: DropdownButton(
                           isExpanded: true,
                           hint: Text("Location"),
@@ -109,7 +104,11 @@ class _TaskDetailState extends State<TaskDetail> {
                         child: Row(
                           children: [
                             Icon(Icons.calendar_today_rounded),
-                            Text("Completion Date: " + taskInstance.completed_date.toString())
+                            SizedBox(width: 10,),
+                            Text(
+                              "Completion Date: " + taskInstance.completed_date.toString(),
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
                               ]
                         ),
                         onPressed: () async{
@@ -125,7 +124,10 @@ class _TaskDetailState extends State<TaskDetail> {
                         child: Row(
                             children: [
                               Icon(Icons.calendar_today_rounded),
-                              Text("Due Date: " + taskInstance.due_date.toString())
+                              SizedBox(width: 10,),
+                              Text("Due Date: " + taskInstance.due_date.toString(),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              )
                             ]
                         ),
                         onPressed: () async{
@@ -142,7 +144,10 @@ class _TaskDetailState extends State<TaskDetail> {
                           child: Row(
                             children: [
                               Icon(Icons.person_add_alt_1),
-                              Text(" Assign To")
+                              SizedBox(width: 10,),
+                              Text(" Assign To",
+                                style: Theme.of(context).textTheme.subtitle1,
+                              )
                             ],
                           )
                       )
@@ -152,17 +157,21 @@ class _TaskDetailState extends State<TaskDetail> {
               ),
           ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RaisedButton(child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.save),
-                  Text("Save Task")
-                ],
-              ),
-                  onPressed: (){}),
-            )
+            RaisedButton(
+              elevation: 2,
+                color: Colors.deepPurple[500],
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 40),
+                Icon(Icons.add, color: Colors.white,),
+                Text("  SAVE TASK", style: TextStyle(
+                  color: Colors.white
+                ),),
+                SizedBox(height: 40),
+              ],
+            ),
+                onPressed: (){})
           ]
         )
       ),

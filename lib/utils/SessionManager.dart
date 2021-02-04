@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:it_todo_list_app/classes/Task.dart';
 import 'package:it_todo_list_app/utils/Consts.dart';
 
 
@@ -11,7 +12,7 @@ class SessionManager  {
   Consts consts = Consts();
 
 
-  Future<Map> getUser() async {
+  Future<Map> getUser(context) async {
     WidgetsFlutterBinding.ensureInitialized();
     // Create storage
     final storage = FlutterSecureStorage();
@@ -28,7 +29,9 @@ class SessionManager  {
 
     Map jsonResponse = jsonDecode(response.body);
     user = jsonResponse;
-
+    if(user.containsKey("message") && user['message'] == 'Unauthenticated.'){
+      logout(context);
+    }
     print(user);
     return user;
   }
@@ -52,8 +55,12 @@ class SessionManager  {
 
     );
 
-    List jsonResponse = jsonDecode(response.body);
-    return jsonResponse;
+    var jsonResponse =  jsonDecode(response.body);
+    List<Task> taskList = [];
+    jsonResponse.forEach((k,v)=>{
+      taskList.add(Task.fromMap(v))
+    });
+    return taskList;
   }
 
   Future<List> getUserCompletedTasks () async {
@@ -75,9 +82,14 @@ class SessionManager  {
       },
     );
 
-    List jsonResponse = jsonDecode(response.body);
-    return jsonResponse;
+    var jsonResponse =  jsonDecode(response.body);
+    List<Task> taskList = [];
+    jsonResponse.forEach((k,v)=>{
+      taskList.add(Task.fromMap(v))
+    });
+    return taskList;
   }
+
 
   Future<List> getIncompleteTasks () async {
 
@@ -100,9 +112,9 @@ class SessionManager  {
     );
 
     var jsonResponse =  jsonDecode(response.body);
-    List taskList = [];
+    List<Task> taskList = [];
     jsonResponse.forEach((k,v)=>{
-      taskList.add(v)
+      taskList.add(Task.fromMap(v))
     });
     return taskList;
   }
@@ -129,8 +141,7 @@ class SessionManager  {
 
     List taskList = [];
     jsonResponse.forEach((k,v)=>{
-      print(v),
-      taskList.add(v)
+      taskList.add(Task.fromMap(v))
     });
 
     return taskList;
@@ -158,6 +169,27 @@ class SessionManager  {
 
     return response;
 
+  }
+
+  Future getTaskCounts() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+
+    // get all task
+    // @todo implement pagination
+    var response = await http.post(
+      consts.apiEndpoint+'api/task/counts',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
   }
 
   saveTask(Map taskMap) async {

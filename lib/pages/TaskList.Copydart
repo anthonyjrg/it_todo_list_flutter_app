@@ -25,45 +25,39 @@ class _TaskList extends State<TaskList> {
   List<Task> completedTaskList = [];
   //checkboxCompletedTaskList is a store for which checkbox have been clicked
   List checkboxCompletedTaskList = [];
-  Future _completeTaskList;
-  Future _incompleteTaskList;
 
-  Future getCompleteTask() async {
-    List listOfTask;
-    await widget.completeTaskFunction().then(
-            (value)=>{
-          listOfTask = value
-        });
-    return listOfTask;
-  }
-
-  Future getIncompleteTask() async {
-    List listOfTask;
-    await widget.incompleteTaskFunction().then(
-            (value)=>{
-          listOfTask = value
-        });
-    // print(listOfTask[0]);
-    return listOfTask;
+  Future<List> getCompleteTask(){
+    widget.completeTaskFunction().
   }
 
   @override
   void initState() {
     super.initState();
-    _completeTaskList = getCompleteTask();
-    _incompleteTaskList = getIncompleteTask();
+    var incompleteTaskFunction = widget.incompleteTaskFunction();
+    var completeTaskFunction = widget.completeTaskFunction();
+
+    completeTaskFunction.then(
+              (value)=>{
+                setState((){completedTaskList=value;})
+    });
+
+    incompleteTaskFunction.then(
+            (value)=>{
+          setState((){incompleteTaskList=value;})
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([_completeTaskList, _incompleteTaskList]),
+        future: Future.wait([_user, _taskCounts]),
         builder: (context, snapshot){
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              var completeTaskList = snapshot.data[0];
-              var incompleteTaskList = snapshot.data[1];
-              return _taskListView(context, completeTaskList, incompleteTaskList, widget.name);
+              var user = snapshot.data[0];
+              var taskCounts = snapshot.data[1];
+              return _mainView(context, user, taskCounts);
             default:
               return _loadingScreen();
           }
@@ -72,8 +66,7 @@ class _TaskList extends State<TaskList> {
   }
 }
 
-Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
-
+Widget _TaskListView(){
   return Scaffold(
     extendBodyBehindAppBar: true,
     appBar: AppBar(
@@ -85,7 +78,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
       title: Row(
         children: [
           Text(
-            " $name",
+            " ${widget.name}",
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold
@@ -134,7 +127,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                             Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TaskDetail(incompleteTaskList[index])));
                           },
                           leading: Checkbox(
-                            value: (false),
+                            value: (checkboxCompletedTaskList.contains(index)),
                             onChanged: (bool value){
                               String resolutionText = "";
 
@@ -159,27 +152,27 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                       actions: [
                                         RaisedButton(
                                           onPressed: (){
-                                            // setState(() {
-                                            //   if(checkboxCompletedTaskList.contains(index))
-                                            //     checkboxCompletedTaskList.remove(index);
-                                            //   else {
-                                            //     checkboxCompletedTaskList.add(index);
-                                            //     Map taskStatus = {
-                                            //       'id' : incompleteTaskList[index]['id'],
-                                            //       'completed_date': new DateTime.now().toString(),
-                                            //       'resolution': resolutionController.text
-                                            //     };
-                                            //     sessionManager.updateTaskStatus(taskStatus).then((value){
-                                            //       print(value.body);
-                                            //       if(value.body == 1){
-                                            //         setState(() {
-                                            //           incompleteTaskList.remove(index);
-                                            //         });
-                                            //       }
-                                            //     });
-                                            //   }
-                                            // });
-                                            // Navigator.pop(context);
+                                            setState(() {
+                                              if(checkboxCompletedTaskList.contains(index))
+                                                checkboxCompletedTaskList.remove(index);
+                                              else {
+                                                checkboxCompletedTaskList.add(index);
+                                                Map taskStatus = {
+                                                  'id' : incompleteTaskList[index]['id'],
+                                                  'completed_date': new DateTime.now().toString(),
+                                                  'resolution': resolutionController.text
+                                                };
+                                                sessionManager.updateTaskStatus(taskStatus).then((value){
+                                                  print(value.body);
+                                                  if(value.body == 1){
+                                                    setState(() {
+                                                      incompleteTaskList.remove(index);
+                                                    });
+                                                  }
+                                                });
+                                              }
+                                            });
+                                            Navigator.pop(context);
                                           },
                                           child: Text("Completed"),
                                         )
@@ -194,7 +187,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                           ),
                           contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           title: Text(
-                            '${incompleteTaskList[index].title}',
+                            '${incompleteTaskList[index]['title']}',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
@@ -205,7 +198,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                               children: [
                                 SizedBox(height: 5,),
                                 Text(
-                                  '${incompleteTaskList[index].task_description}',
+                                  '${incompleteTaskList[index]['task_description']}',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   softWrap: false,
@@ -216,7 +209,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                 ),
                                 SizedBox(height: 10,),
                                 Text(
-                                  '${incompleteTaskList[index].created_at}',
+                                  '${incompleteTaskList[index]['created_at']}',
                                   style: TextStyle(
                                       fontFamily: 'Open Sans',
                                       fontSize: 11,
@@ -224,7 +217,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                   ),
                                 ),
                                 Text(
-                                  '${incompleteTaskList[index].assigned_to}',
+                                  '${incompleteTaskList[index]['assigned_to']}',
                                   style: TextStyle(
                                       fontFamily: 'Open Sans',
                                       fontSize: 11,
@@ -257,7 +250,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                     ),
                   ),
                   ListView.builder(
-                    itemCount: completeTaskList.length,
+                    itemCount: completedTaskList.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index){
@@ -269,11 +262,13 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                   value: (true),
                                   onChanged: (bool value){
 
+                                    print(value);
+                                    print(completedTaskList[index]);
                                   },
                                 ),
                                 contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 title: Text(
-                                  '${completeTaskList[index].title}',
+                                  '${completedTaskList[index]['title']}',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   softWrap: false,
@@ -288,7 +283,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                     children: [
                                       SizedBox(height: 5,),
                                       Text(
-                                        '${completeTaskList[index].task_description}',
+                                        '${completedTaskList[index]['task_description']}',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         softWrap: false,
@@ -300,7 +295,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                                       ),
                                       SizedBox(height: 10,),
                                       Text(
-                                        '${completeTaskList[index].created_at}',
+                                        '${completedTaskList[index]['created_at']}',
                                         style: TextStyle(
                                             fontFamily: 'Open Sans',
                                             fontSize: 11,
@@ -328,19 +323,6 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
               ),
             )
         ),
-      ),
-    ),
-  );
-}
-
-Widget _loadingScreen() {
-  return Scaffold(
-    backgroundColor: Colors.grey[100],
-    body: Center(
-      child: Container(
-        width: 50,
-        height: 50,
-        child: CircularProgressIndicator(),
       ),
     ),
   );

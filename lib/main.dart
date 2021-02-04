@@ -40,17 +40,34 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'Open Sans',
         textTheme: TextTheme(
           headline2: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+          ),
+            headline3: TextStyle(
+              fontSize: 18,
+              color: Colors.deepPurple[900],
+            ),
+          bodyText1: TextStyle(
             fontSize: 16,
-            color: Colors.grey[600]
+            color: Colors.white,
+          ),
+          bodyText2: TextStyle(
+            fontSize: 16,
+            color: Colors.deepPurple[900]
+          ),
+          subtitle1: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[700],
           ),
           subtitle2: TextStyle(
-            fontSize: 10,
-            color: Colors.grey[400]
+            fontSize: 12,
+            color: Colors.grey[200],
           )
         ),
         colorScheme: Theme.of(context).colorScheme.copyWith (
               primary: Color(0x014421),
-              secondary: Colors.grey[700]
+              secondary: Colors.grey[700],
+
         )
       ),
       // Start the app with the "/" named route. In this case, the app starts
