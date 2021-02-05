@@ -18,7 +18,7 @@ class _TaskDetailState extends State<TaskDetail> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    taskInstance = Task.fromMap(widget.task);
+    taskInstance = widget.task;
   }
 
   @override

@@ -21,7 +21,7 @@ class _TaskHomeState extends State<TaskHome> {
   Future _taskCounts;
 
 
-  Future<User> getUser() async {
+  Future getUser() async {
     User user;
     await sessionManager.getUser(context).then((value)=>{
       user = User.fromMap(value)
@@ -110,6 +110,14 @@ Widget _mainView(context, user, taskCounts){
 
   Function allIncompleteTaskFunction = () {
     return sessionManager.getIncompleteTasks();
+  };
+
+  Function CHBCompleteTaskFunction = (){
+    return sessionManager.getCHBCompleteTask();
+  };
+
+  Function CHBInompleteTaskFunction = (){
+    return sessionManager.getCHBInompleteTask();
   };
 
   return Scaffold(
@@ -381,97 +389,115 @@ Widget _mainView(context, user, taskCounts){
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, bottom: 40),
+                      padding: const EdgeInsets.only(bottom: 40),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Locations",
-                              style: Theme.of(context).textTheme.headline2,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                "Locations",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
                             ),
                             SizedBox(height: 5),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
-                                      child: Column (
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                "CHB",
-                                                style: Theme.of(context).textTheme.headline3
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Text(taskCounts["CHB_Incomplete"].toString()),
-                                            Text(
-                                              "Task Incomplete",
-                                              style: Theme.of(context).textTheme.subtitle1,
-                                            ),
-                                            SizedBox(height: 5,),
-                                            Text(taskCounts["CHB_Complete"].toString()),
-                                            Text(
-                                              "Task Complete",
-                                              style: Theme.of(context).textTheme.subtitle1,
-                                            )
-                                          ]
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    Card(
+                                      child: GestureDetector (
+                                        onTap: (){
+                                          Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                          builder: (context) => (TaskList(
+                                          CHBCompleteTaskFunction,
+                                          CHBIncompleteTaskFunction,
+                                          "CHB Task"))
+                                          )
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
+                                          child: Column (
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    "CHB",
+                                                    style: Theme.of(context).textTheme.headline3
+                                                ),
+                                                SizedBox(height: 10,),
+                                                Text(taskCounts["CHB_Incomplete"].toString()),
+                                                Text(
+                                                  "Task Incomplete",
+                                                  style: Theme.of(context).textTheme.subtitle1,
+                                                ),
+                                                SizedBox(height: 5,),
+                                                Text(taskCounts["CHB_Complete"].toString()),
+                                                Text(
+                                                  "Task Complete",
+                                                  style: Theme.of(context).textTheme.subtitle1,
+                                                )
+                                              ]
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
-                                      child: Column (
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                "JFK",
-                                                style: Theme.of(context).textTheme.headline3
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Text(taskCounts["JFK_Incomplete"].toString()),
-                                            Text(
-                                              "Task Incomplete",
-                                              style: Theme.of(context).textTheme.subtitle1,
-                                            ),
-                                            SizedBox(height: 5,),
-                                            Text(taskCounts["JFK_Complete"].toString()),
-                                            Text(
-                                              "Task Complete",
-                                              style: Theme.of(context).textTheme.subtitle1,)
-                                          ]
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
+                                        child: Column (
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  "JFK",
+                                                  style: Theme.of(context).textTheme.headline3
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Text(taskCounts["JFK_Incomplete"].toString()),
+                                              Text(
+                                                "Task Incomplete",
+                                                style: Theme.of(context).textTheme.subtitle1,
+                                              ),
+                                              SizedBox(height: 5,),
+                                              Text(taskCounts["JFK_Complete"].toString()),
+                                              Text(
+                                                "Task Complete",
+                                                style: Theme.of(context).textTheme.subtitle1,)
+                                            ]
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
-                                      child: Column (
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                "MISC",
-                                                style: Theme.of(context).textTheme.headline3
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Text(taskCounts["MISC_Incomplete"].toString()),
-                                            Text(
-                                              "Task Incomplete",
-                                              style: Theme.of(context).textTheme.subtitle1,
-                                            ),
-                                            SizedBox(height: 5,),
-                                            Text(taskCounts["MISC_Complete"].toString()),
-                                            Text(
-                                              "Task Complete",
-                                              style: Theme.of(context).textTheme.subtitle1,
-                                            )
-                                          ]
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10, right: 30),
+                                        child: Column (
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  "MISC",
+                                                  style: Theme.of(context).textTheme.headline3
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Text(taskCounts["MISC_Incomplete"].toString()),
+                                              Text(
+                                                "Task Incomplete",
+                                                style: Theme.of(context).textTheme.subtitle1,
+                                              ),
+                                              SizedBox(height: 5,),
+                                              Text(taskCounts["MISC_Complete"].toString()),
+                                              Text(
+                                                "Task Complete",
+                                                style: Theme.of(context).textTheme.subtitle1,
+                                              )
+                                            ]
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             )
                           ]
@@ -501,52 +527,62 @@ Widget _mainView(context, user, taskCounts){
                               ),
                             ),
                             SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  child: RaisedButton(
-                                    onPressed: (){
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) => (TaskList(
-                                                  allUserCompleteTaskFunction,
-                                                  allUserIncompleteTaskFunction,
-                                                  "My Task"))));
-                                    },
-                                    color: consts.colors["mainPurple"],
-                                    child: Icon(
-                                      Icons.list_alt,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(10.0))
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => (TaskList(
+                                            allUserCompleteTaskFunction,
+                                            allUserIncompleteTaskFunction,
+                                            "My Task"))));
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    width: 60,
+                                    child: RaisedButton(
+                                      onPressed: (){
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) => (TaskList(
+                                                    allUserCompleteTaskFunction,
+                                                    allUserIncompleteTaskFunction,
+                                                    "My Task"))));
+                                      },
+                                      color: consts.colors["mainPurple"],
+                                      child: Icon(
+                                        Icons.list_alt,
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "My Task",
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                      Text(
-                                        taskCounts["User_Incomplete"].toString() + " Task Incomplete",
-                                        style: Theme.of(context).textTheme.subtitle1,
-                                      ),
-                                      Text(
-                                        taskCounts["User_Complete"].toString() + " Total Task Complete",
-                                        style: Theme.of(context).textTheme.subtitle1,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "My Task",
+                                          style: Theme.of(context).textTheme.bodyText2,
+                                        ),
+                                        Text(
+                                          taskCounts["User_Incomplete"].toString() + " Task Incomplete",
+                                          style: Theme.of(context).textTheme.subtitle1,
+                                        ),
+                                        Text(
+                                          taskCounts["User_Complete"].toString() + " Total Task Complete",
+                                          style: Theme.of(context).textTheme.subtitle1,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                             SizedBox(height: 10),
                             GestureDetector(

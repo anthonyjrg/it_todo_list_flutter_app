@@ -122,130 +122,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
               child: Column(
 
                 children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    primary: false,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: incompleteTaskList.length,
-                    itemBuilder: (context, index){
-                      return Card(
-                        child: ListTile(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TaskDetail(incompleteTaskList[index])));
-                          },
-                          leading: Checkbox(
-                            value: (false),
-                            onChanged: (bool value){
-                              String resolutionText = "";
-
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context){
-                                    TextEditingController resolutionController = TextEditingController();
-                                    return AlertDialog(
-                                      title: Text("Task Resolution"),
-                                      content: Form(
-                                        child: Container(
-                                          child: TextFormField(
-                                            controller: resolutionController,
-                                            decoration: InputDecoration(
-                                              labelText: "Resolution Description",
-                                            ),
-                                            minLines: 2,
-                                            maxLines: 3,
-                                          ),
-                                        ) ,
-                                      ),
-                                      actions: [
-                                        RaisedButton(
-                                          onPressed: (){
-                                            // setState(() {
-                                            //   if(checkboxCompletedTaskList.contains(index))
-                                            //     checkboxCompletedTaskList.remove(index);
-                                            //   else {
-                                            //     checkboxCompletedTaskList.add(index);
-                                            //     Map taskStatus = {
-                                            //       'id' : incompleteTaskList[index]['id'],
-                                            //       'completed_date': new DateTime.now().toString(),
-                                            //       'resolution': resolutionController.text
-                                            //     };
-                                            //     sessionManager.updateTaskStatus(taskStatus).then((value){
-                                            //       print(value.body);
-                                            //       if(value.body == 1){
-                                            //         setState(() {
-                                            //           incompleteTaskList.remove(index);
-                                            //         });
-                                            //       }
-                                            //     });
-                                            //   }
-                                            // });
-                                            // Navigator.pop(context);
-                                          },
-                                          child: Text("Completed"),
-                                        )
-                                      ],
-                                    );
-                                  }
-                              );
-
-                              print(value);
-                              print(incompleteTaskList[index]);
-                            },
-                          ),
-                          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          title: Text(
-                            '${incompleteTaskList[index].title}',
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            softWrap: false,
-                          ),
-
-                          subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 5,),
-                                Text(
-                                  '${incompleteTaskList[index].task_description}',
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 12
-                                  ),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  '${incompleteTaskList[index].created_at}',
-                                  style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 11,
-                                      color: Colors.grey[700]
-                                  ),
-                                ),
-                                Text(
-                                  '${incompleteTaskList[index].assigned_to}',
-                                  style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 11,
-                                      color: Colors.grey[700]
-                                  ),
-                                )
-                              ]
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.grey[300],
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  listView(incompleteTaskList),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                     child: Text(
@@ -256,74 +133,7 @@ Widget _taskListView(context, completeTaskList, incompleteTaskList, name){
                       ),
                     ),
                   ),
-                  ListView.builder(
-                    itemCount: completeTaskList.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index){
-                      return Column(
-                          children:[
-                            Card(
-                              child: ListTile(
-                                leading: Checkbox(
-                                  value: (true),
-                                  onChanged: (bool value){
-
-                                  },
-                                ),
-                                contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                title: Text(
-                                  '${completeTaskList[index].title}',
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontSize: 12
-                                  ),
-                                ),
-
-                                subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 5,),
-                                      Text(
-                                        '${completeTaskList[index].task_description}',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 10,
-                                            color: Colors.grey[600]
-                                        ),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Text(
-                                        '${completeTaskList[index].created_at}',
-                                        style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 11,
-                                            color: Colors.grey[500]
-                                        ),
-                                      )
-                                    ]
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.grey[300],
-                                  ),
-                                  onPressed: (){
-
-                                  },
-                                ),
-                              ),
-                            ),
-                          ]
-                      );
-                    },
-                  ),
+                  listView(completeTaskList),
                 ],
               ),
             )
@@ -343,5 +153,130 @@ Widget _loadingScreen() {
         child: CircularProgressIndicator(),
       ),
     ),
+  );
+}
+
+Widget listView(List taskList){
+  return  ListView.builder(
+    shrinkWrap: true,
+    primary: false,
+    physics: NeverScrollableScrollPhysics(),
+    itemCount: taskList.length,
+    itemBuilder: (context, index){
+      return Card(
+        child: ListTile(
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TaskDetail(taskList[index])));
+          },
+          leading: Checkbox(
+            value: (false),
+            onChanged: (bool value){
+              String resolutionText = "";
+
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context){
+                    TextEditingController resolutionController = TextEditingController();
+                    return AlertDialog(
+                      title: Text("Task Resolution"),
+                      content: Form(
+                        child: Container(
+                          child: TextFormField(
+                            controller: resolutionController,
+                            decoration: InputDecoration(
+                              labelText: "Resolution Description",
+                            ),
+                            minLines: 2,
+                            maxLines: 3,
+                          ),
+                        ) ,
+                      ),
+                      actions: [
+                        RaisedButton(
+                          onPressed: (){
+                            // setState(() {
+                            //   if(checkboxCompletedTaskList.contains(index))
+                            //     checkboxCompletedTaskList.remove(index);
+                            //   else {
+                            //     checkboxCompletedTaskList.add(index);
+                            //     Map taskStatus = {
+                            //       'id' : incompleteTaskList[index]['id'],
+                            //       'completed_date': new DateTime.now().toString(),
+                            //       'resolution': resolutionController.text
+                            //     };
+                            //     sessionManager.updateTaskStatus(taskStatus).then((value){
+                            //       print(value.body);
+                            //       if(value.body == 1){
+                            //         setState(() {
+                            //           incompleteTaskList.remove(index);
+                            //         });
+                            //       }
+                            //     });
+                            //   }
+                            // });
+                            // Navigator.pop(context);
+                          },
+                          child: Text("Completed"),
+                        )
+                      ],
+                    );
+                  }
+              );
+
+            },
+          ),
+          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+          title: Text(
+            '${taskList[index].title}',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            softWrap: false,
+          ),
+
+          subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 5,),
+                Text(
+                  '${taskList[index].task_description}',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                      fontFamily: 'Open Sans',
+                      fontSize: 12
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  '${taskList[index].created_at}',
+                  style: TextStyle(
+                      fontFamily: 'Open Sans',
+                      fontSize: 11,
+                      color: Colors.grey[700]
+                  ),
+                ),
+                Text(
+                  '${taskList[index].assigned_to}',
+                  style: TextStyle(
+                      fontFamily: 'Open Sans',
+                      fontSize: 11,
+                      color: Colors.grey[700]
+                  ),
+                )
+              ]
+          ),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.grey[300],
+            ),
+            onPressed: (){
+
+            },
+          ),
+        ),
+      );
+    },
   );
 }

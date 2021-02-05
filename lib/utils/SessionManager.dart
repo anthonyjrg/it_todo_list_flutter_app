@@ -57,7 +57,7 @@ class SessionManager  {
 
     var jsonResponse =  jsonDecode(response.body);
     List<Task> taskList = [];
-    jsonResponse.forEach((k,v)=>{
+    jsonResponse.forEach((v)=>{
       taskList.add(Task.fromMap(v))
     });
     return taskList;
@@ -84,7 +84,8 @@ class SessionManager  {
 
     var jsonResponse =  jsonDecode(response.body);
     List<Task> taskList = [];
-    jsonResponse.forEach((k,v)=>{
+
+    jsonResponse.forEach((v) => {
       taskList.add(Task.fromMap(v))
     });
     return taskList;
@@ -120,6 +121,34 @@ class SessionManager  {
   }
 
   Future<List> getCompletedTasks () async {
+    //get user token
+    WidgetsFlutterBinding.ensureInitialized();
+    // Create storage
+    final storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token");
+    // get all task
+    // @todo implement pagination
+    var response = await http.post(
+      consts.apiEndpoint+'api/task/complete',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+
+
+    List taskList = [];
+    jsonResponse.forEach((k,v)=>{
+      taskList.add(Task.fromMap(v))
+    });
+
+    return taskList;
+  }
+
+  Future<List> getCHBCompletedTasks () async {
     //get user token
     WidgetsFlutterBinding.ensureInitialized();
     // Create storage
